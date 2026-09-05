@@ -6,8 +6,34 @@ local ui_options = {
 }
 
 do
-	local imgui = game:GetService("CoreGui"):FindFirstChild("imgui")
-	if imgui then imgui:Destroy() end
+	local function destroyImguiIn(parent)
+		if parent and parent.FindFirstChild then
+			local existing = parent:FindFirstChild("imgui")
+			if existing then
+				pcall(function() existing:Destroy() end)
+			end
+		end
+	end
+
+	destroyImguiIn(game:GetService("CoreGui"))
+
+	local Players = game:GetService("Players")
+	if Players and Players.LocalPlayer then
+		destroyImguiIn(Players.LocalPlayer:FindFirstChild("PlayerGui"))
+	end
+
+	if type(gethui) == "function" then
+		local ok, gh = pcall(gethui)
+		if ok and gh then
+			destroyImguiIn(gh)
+		end
+	end
+
+	for _,v in pairs(game:GetDescendants()) do
+		if v.Name == "imgui" and v:IsA("ScreenGui") then
+			pcall(function() v:Destroy() end)
+		end
+	end
 end
 
 local imgui = Instance.new("ScreenGui")
@@ -114,8 +140,8 @@ window.ClipsDescendants = true
 window.Position = UDim2.new(0, 20, 0, 20)
 window.Selectable = true
 window.Size = UDim2.new(0, 200, 0, 200)
-window.Image = "rbxassetid://103402124712995"
-window.ImageColor3 = Color3.new(1, 1, 1)
+window.Image = "rbxassetid://2851926732"
+window.ImageColor3 = Color3.new(0.0823529, 0.0862745, 0.0901961)
 window.ScaleType = Enum.ScaleType.Slice
 window.SliceCenter = Rect.new(12, 12, 12, 12)
 
@@ -140,10 +166,14 @@ toggle.Parent = bar
 toggle.BackgroundColor3 = Color3.new(1, 1, 1)
 toggle.BackgroundTransparency = 1
 toggle.Position = UDim2.new(0, 5, 0, -2)
-toggle.Rotation = 90
+toggle.Rotation = 0
 toggle.Size = UDim2.new(0, 20, 0, 20)
 toggle.ZIndex = 2
 toggle.Image = "https://www.roblox.com/Thumbs/Asset.ashx?width=420&height=420&assetId=113281701497572"
+
+local toggleCorner = Instance.new("UICorner")
+toggleCorner.CornerRadius = UDim.new(0.5, 0)
+toggleCorner.Parent = toggle
 
 base.Name = "Base"
 base.Parent = bar
@@ -268,7 +298,7 @@ sliderTitle.BackgroundTransparency = 1
 sliderTitle.Position = UDim2.new(0.5, 0, 0.5, -10)
 sliderTitle.Size = UDim2.new(0, 0, 0, 20)
 sliderTitle.ZIndex = 2
-sliderTitle.Font = Enum.Font.GothamBold
+sliderTitle.Font = Enum.Font.GothamSemibold
 sliderTitle.Text = "Slider"
 sliderTitle.TextColor3 = Color3.new(0.784314, 0.784314, 0.784314)
 sliderTitle.TextSize = 14
@@ -289,7 +319,7 @@ sliderValue.BackgroundColor3 = Color3.new(1, 1, 1)
 sliderValue.BackgroundTransparency = 1
 sliderValue.Position = UDim2.new(1, -55, 0.5, -10)
 sliderValue.Size = UDim2.new(0, 50, 0, 20)
-sliderValue.Font = Enum.Font.GothamBold
+sliderValue.Font = Enum.Font.GothamSemibold
 sliderValue.Text = "0%"
 sliderValue.TextColor3 = Color3.new(0.784314, 0.784314, 0.784314)
 sliderValue.TextSize = 14
@@ -299,7 +329,7 @@ textLabel.BackgroundColor3 = Color3.new(1, 1, 1)
 textLabel.BackgroundTransparency = 1
 textLabel.Position = UDim2.new(1, -20, -0.75, 0)
 textLabel.Size = UDim2.new(0, 26, 0, 50)
-textLabel.Font = Enum.Font.GothamBold
+textLabel.Font = Enum.Font.GothamSemibold
 textLabel.Text = "]"
 textLabel.TextColor3 = Color3.new(0.627451, 0.627451, 0.627451)
 textLabel.TextSize = 14
@@ -309,7 +339,7 @@ textLabel2.BackgroundColor3 = Color3.new(1, 1, 1)
 textLabel2.BackgroundTransparency = 1
 textLabel2.Position = UDim2.new(1, -65, -0.75, 0)
 textLabel2.Size = UDim2.new(0, 26, 0, 50)
-textLabel2.Font = Enum.Font.GothamBold
+textLabel2.Font = Enum.Font.GothamSemibold
 textLabel2.Text = "["
 textLabel2.TextColor3 = Color3.new(0.627451, 0.627451, 0.627451)
 textLabel2.TextSize = 14
@@ -331,10 +361,10 @@ dropdown.Parent = prefabs
 dropdown.BackgroundColor3 = Color3.new(1, 1, 1)
 dropdown.BackgroundTransparency = 1
 dropdown.BorderSizePixel = 0
-dropdown.Position = UDim2.new(-0.055555556, 0, 0.0833333284, 0)
-dropdown.Size = UDim2.new(0, 200, 0, 20)
+dropdown.Position = UDim2.new(0, 0, 0.0833333284, 0)
+dropdown.Size = UDim2.new(1, 0, 0, 20)
 dropdown.ZIndex = 2
-dropdown.Font = Enum.Font.GothamBold
+dropdown.Font = Enum.Font.GothamSemibold
 dropdown.Text = "      Dropdown"
 dropdown.TextColor3 = Color3.new(0.784314, 0.784314, 0.784314)
 dropdown.TextSize = 14
@@ -344,7 +374,7 @@ dropdownIndicator.Name = "Indicator"
 dropdownIndicator.Parent = dropdown
 dropdownIndicator.BackgroundColor3 = Color3.new(1, 1, 1)
 dropdownIndicator.BackgroundTransparency = 1
-dropdownIndicator.Position = UDim2.new(0.899999976, -10, 0.100000001, 0)
+dropdownIndicator.Position = UDim2.new(1, -25, 0.100000001, 0)
 dropdownIndicator.Rotation = -90
 dropdownIndicator.Size = UDim2.new(0, 15, 0, 15)
 dropdownIndicator.ZIndex = 2
@@ -442,13 +472,17 @@ textButtonRoundify4px_3.ImageColor3 = Color3.new(0.160784, 0.290196, 0.478431)
 textButtonRoundify4px_3.ScaleType = Enum.ScaleType.Slice
 textButtonRoundify4px_3.SliceCenter = Rect.new(4, 4, 4, 4)
 
-toggle2.Name = "Toggle"
-toggle2.Parent = button
-toggle2.BackgroundColor3 = Color3.new(1, 1, 1)
-toggle2.BackgroundTransparency = 1
-toggle2.Position = UDim2.new(0, 5, 0, 0)
-toggle2.Size = UDim2.new(0, 20, 0, 20)
-toggle2.Image = "https://www.roblox.com/Thumbs/Asset.ashx?width=420&height=420&assetId=4731371541"
+	toggle2.Name = "Toggle"
+	toggle2.Parent = button
+	toggle2.BackgroundColor3 = Color3.new(1, 1, 1)
+	toggle2.BackgroundTransparency = 1
+	toggle2.Position = UDim2.new(0, 5, 0, 0)
+	toggle2.Size = UDim2.new(0, 20, 0, 20)
+	toggle2.Image = "https://www.roblox.com/Thumbs/Asset.ashx?width=420&height=420&assetId=4731371541"
+
+	local toggle2Corner = Instance.new("UICorner")
+	toggle2Corner.CornerRadius = UDim.new(0.5, 0)
+	toggle2Corner.Parent = toggle2
 
 objects2.Name = "Objects"
 objects2.Parent = folder
@@ -691,7 +725,7 @@ switchButton.BorderSizePixel = 0
 switchButton.Position = UDim2.new(0.229411766, 0, 0.20714286, 0)
 switchButton.Size = UDim2.new(0, 20, 0, 20)
 switchButton.ZIndex = 2
-switchButton.Font = Enum.Font.SourceSans
+switchButton.Font = Enum.Font.GothamSemibold
 switchButton.Text = ""
 switchButton.TextColor3 = Color3.new(1, 1, 1)
 switchButton.TextSize = 18
@@ -713,7 +747,7 @@ title3Label.BackgroundColor3 = Color3.new(1, 1, 1)
 title3Label.BackgroundTransparency = 1
 title3Label.Position = UDim2.new(1.20000005, 0, 0, 0)
 title3Label.Size = UDim2.new(0, 20, 0, 20)
-title3Label.Font = Enum.Font.GothamSemibold
+title3Label.Font = Enum.Font.GothamBold
 title3Label.Text = "Switch"
 title3Label.TextColor3 = Color3.new(0.784314, 0.784314, 0.784314)
 title3Label.TextSize = 14
@@ -746,7 +780,7 @@ dropdownButton.BackgroundColor3 = Color3.new(0.129412, 0.133333, 0.141176)
 dropdownButton.BorderSizePixel = 0
 dropdownButton.Size = UDim2.new(1, 0, 0, 20)
 dropdownButton.ZIndex = 3
-dropdownButton.Font = Enum.Font.GothamBold
+dropdownButton.Font = Enum.Font.GothamSemibold
 dropdownButton.Text = "      Button"
 dropdownButton.TextColor3 = Color3.new(0.784314, 0.784314, 0.784314)
 dropdownButton.TextSize = 14
@@ -1063,7 +1097,6 @@ function library:AddWindow(title, options)
 					Resizer.Active = false
 
 					oldy = Window.AbsoluteSize.Y
-					Resize(open_close, {Rotation = 0}, options.tween_time)
 					Resize(Window, {Size = UDim2.new(0, Window.AbsoluteSize.X, 0, 26)}, options.tween_time)
 					open_close.Parent:FindFirstChild("Base").Transparency = 1
 
@@ -1076,7 +1109,6 @@ function library:AddWindow(title, options)
 
 					Resizer.Active = true
 
-					Resize(open_close, {Rotation = 90}, options.tween_time)
 					Resize(Window, {Size = UDim2.new(0, Window.AbsoluteSize.X, 0, oldy)}, options.tween_time)
 					open_close.Parent:FindFirstChild("Base").Transparency = 0
 
@@ -1993,10 +2025,8 @@ local object = prefabs:FindFirstChild("DropdownButton"):Clone()
 						local open = false
 						button.MouseButton1Click:Connect(function()
 							if open then -- Close
-								Resize(toggle, {Rotation = 0}, options.tween_time)
 								objects.Visible = false
 							else -- Open
-								Resize(toggle, {Rotation = 90}, options.tween_time)
 								objects.Visible = true
 							end
 
